@@ -1,1 +1,11 @@
 # Collector specific configuration
+base_url: "api.climatetrace.org"
+
+dataset_title: "Climate TRACE GHG and non-GHG Emissions Inventory"
+
+tags:
+  - air pollutants
+  - environment
+  - geodata
+  - greenhouse gas emissions
+  - points of interest-poi

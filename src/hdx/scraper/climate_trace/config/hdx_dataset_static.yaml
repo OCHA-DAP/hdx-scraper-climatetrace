@@ -1,10 +1,22 @@
 license_id: cc-by
 methodology: Other
-caveats:
-dataset_source:
+methodology_other: |
+  Climate TRACE identifies the most significant gaps in emissions reporting within current greenhouse gas inventories and develops models to estimate those emissions gaps. Climate TRACE emissions data is generated on a sector-by-sector basis by the relevant Climate TRACE sector lead and additional contributed organizations they collaborate with.
+
+  Each Climate TRACE sector uses a methodology that is specialized and relevant to each particular sector to estimate emissions. The most common method is using computer vision models to combine one predictor variable (such as satellite imagery) and one high-quality source of ground truth data (such as verified, calibrated sensors located at individual facilities). Computer vision models are a form of artificial intelligence that, unlike generative AI, is relatively easy to verify and not prone to hallucination. In addition, Climate TRACE also uses a number of other statistical approaches such as disaggregating total production within a country to all the facilities, and modeling emissions using IPCC National GHG Inventory Guidelines.
+
+  We’ve published detailed documentation on our methodologies, peer reviewed research that underlies those methodologies, and the key datasets and assumptions for the Climate TRACE inventory. You can find those on our data downloads page at https://climatetrace.org/data.
+caveats: See methodology documents for sector specific caveats
+dataset_source: Climate TRACE
 package_creator: HDX Data Systems Team
 private: False
 maintainer:
 owner_org:
-data_update_frequency:
-notes:
+data_update_frequency: 30
+notes: |
+  Climate TRACE is a non-profit coalition of organizations building a timely, open, and accessible inventory of exactly where greenhouse gas emissions are coming from. Climate TRACE estimates greenhouse gas (GHG) and air pollutant emissions for over 2.7 million sources (from over 744 million assets), and every single country globally.
+
+  The Climate TRACE emissions inventory includes:
+  - Annual country-level emissions by sub-sector and by gas beginning in 2015
+  - Monthly source-level emissions by sub-sector and gas beginning in 2021 and confidence
+  - Emissions source ownership where and when available.

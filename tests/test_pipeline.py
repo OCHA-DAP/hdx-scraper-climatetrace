@@ -25,9 +25,9 @@ class TestPipeline:
                     use_saved=True,
                 )
                 today = datetime(2026, 2, 15)
-                pipeline = Pipeline(configuration, retriever, tempdir)
+                pipeline = Pipeline(configuration, retriever, tempdir, today)
                 pipeline.get_admin_data(["AFG"])
-                pipeline.get_emissions_admin_data(today=today)
+                pipeline.get_emissions_admin_data()
 
                 dataset = pipeline.generate_country_dataset("AFG")
                 dataset.update_from_yaml(

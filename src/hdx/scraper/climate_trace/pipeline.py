@@ -15,10 +15,18 @@ logger = logging.getLogger(__name__)
 
 
 class Pipeline:
-    def __init__(self, configuration: Configuration, retriever: Retrieve, tempdir: str):
+    def __init__(
+        self,
+        configuration: Configuration,
+        retriever: Retrieve,
+        tempdir: str,
+        today: datetime,
+    ):
         self._configuration = configuration
         self._retriever = retriever
         self._tempdir = tempdir
+        self.today = today
+        self.min_date = today - relativedelta(years=2)
         self.admins = {}
         self.data = {}
 
@@ -52,12 +60,10 @@ class Pipeline:
             self.admins[iso3] = {"admin": admin_info, "cities": cities_json}
         return
 
-    def process_rows(
-        self, input_data: dict, admin_unit: dict, min_date: datetime
-    ) -> list[dict]:
+    def process_rows(self, input_data: dict, admin_unit: dict) -> list[dict]:
         rows = []
-        min_year = min_date.year
-        min_month = min_date.month
+        min_year = self.min_date.year
+        min_month = self.min_date.month
         sector_data = input_data["sectors"]["timeseries"]
         if sector_data is None:
             sector_data = []
@@ -71,10 +77,9 @@ class Pipeline:
             rows.append(new_row)
         return rows
 
-    def get_emissions_admin_data(self, today: datetime) -> None:
-        min_date = today - relativedelta(years=2)
-        min_year = min_date.year
-        max_year = today.year
+    def get_emissions_admin_data(self) -> None:
+        min_year = self.min_date.year
+        max_year = self.today.year
 
         # loop through countries, admin units, gases, and years
         base_url = self._configuration["emissions_url"]
@@ -94,7 +99,7 @@ class Pipeline:
                                 admin_id_type = "cityId"
                             url = f"{base_url}?year={year}&gas={gas}&{admin_id_type}={admin_id}"
                             json = self._retriever.download_json(url)
-                            rows = self.process_rows(json, admin_unit, min_date)
+                            rows = self.process_rows(json, admin_unit)
                             self.data[iso3][f"{gas}|{admin_type}"].extend(rows)
         return
 

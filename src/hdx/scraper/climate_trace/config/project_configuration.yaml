@@ -1,5 +1,6 @@
 # Collector specific configuration
 admin_url: "https://api.climatetrace.org/v7/admins/{admin_id}/subdivisions"
+cities_url: "https://api.climatetrace.org/v7/cities?country={admin_id}"
 emissions_url: "https://api.climatetrace.org/v7/sources/emissions"
 
 gases:

@@ -23,63 +23,37 @@ class Pipeline:
         self.data = {}
 
     def get_admin_data(self, iso3s: list[str]) -> None:
-        base_url = self._configuration["admin_url"]
         for iso3 in iso3s:
-            admin1_url = base_url.format(admin_id=iso3)
+            country_name = Country.get_country_name_from_iso3(iso3)
+            admin_info = [
+                {
+                    "full_name": country_name,
+                    "id": iso3,
+                    "level": 0,
+                    "level_0_id": iso3,
+                    "level_1_id": "",
+                    "level_2_id": "",
+                    "name": country_name,
+                }
+            ]
+            admin1_url = self._configuration["admin_url"].format(admin_id=iso3)
             try:
                 admin1_json = self._retriever.download_json(admin1_url)
             except DownloadError:
-                logger.error(f"No admin units found for {iso3}")
-                continue
-            admin0_info = {
-                "id": iso3,
-                "name": "",
-                "full_name": "",
-                "level": 0,
-                "level_0_id": iso3,
-                "level_1_id": "",
-                "level_2_id": "",
-            }
-            self.admins[iso3] = {0: [admin0_info], 1: admin1_json, 2: []}
-            for admin1_unit in admin1_json:
-                admin_id = admin1_unit["level_1_id"]
-                admin2_url = base_url.format(admin_id=admin_id)
-                try:
-                    admin2_json = self._retriever.download_json(admin2_url)
-                except DownloadError:
-                    continue
-                self.admins[iso3][2].extend(admin2_json)
+                logger.warning(f"No admin units found for {iso3}")
+                admin1_json = []
+            admin_info.extend(admin1_json)
+            cities_url = self._configuration["cities_url"].format(admin_id=iso3)
+            try:
+                cities_json = self._retriever.download_json(cities_url)
+            except DownloadError:
+                logger.warning(f"No cities found for {iso3}")
+                cities_json = []
+            self.admins[iso3] = {"admin": admin_info, "cities": cities_json}
         return
 
-    def fill_admin_info(self, admin_info: dict, admin_level: int) -> dict:
-        keep_keys = [
-            "level",
-            "level_0_id",
-            "level_0_name",
-            "level_1_id",
-            "level_1_name",
-            "level_2_id",
-            "level_2_name",
-        ]
-        admin_info["level_0_name"] = Country.get_country_name_from_iso3(
-            admin_info["level_0_id"]
-        )
-        admin_info["level_1_name"] = ""
-        admin_info["level_2_name"] = ""
-        if admin_level == 1:
-            admin_info["level_1_name"] = admin_info["name"]
-        if admin_level == 2:
-            admin_info["level_2_name"] = admin_info["name"]
-            admin_1_units = self.admins[admin_info["level_0_id"]][1]
-            admin_1_unit = [
-                unit for unit in admin_1_units if unit["id"] == admin_info["level_1_id"]
-            ][0]
-            admin_info["level_1_name"] = admin_1_unit["name"]
-        updated_admin_info = {key: admin_info[key] for key in keep_keys}
-        return updated_admin_info
-
     def process_rows(
-        self, input_data: dict, admin_info: dict, min_date: datetime
+        self, input_data: dict, admin_unit: dict, min_date: datetime
     ) -> list[dict]:
         rows = []
         min_year = min_date.year
@@ -93,36 +67,35 @@ class Pipeline:
         for row in sector_data + subsector_data:
             if row["year"] <= min_year and row["month"] < min_month:
                 continue
-            new_row = admin_info | row
+            new_row = admin_unit | row
             rows.append(new_row)
         return rows
 
-    def get_emissions_data(self, today: datetime) -> None:
+    def get_emissions_admin_data(self, today: datetime) -> None:
         min_date = today - relativedelta(years=2)
         min_year = min_date.year
         max_year = today.year
 
-        base_url = self._configuration["emissions_url"]
-
-        # list available gas parameters
-        gases = self._configuration["gases"]
-        sectors = ",".join(self._configuration["sectors"])
-
         # loop through countries, admin units, gases, and years
-        for iso3, admin_levels in self.admins.items():
+        base_url = self._configuration["emissions_url"]
+        for iso3, admin_types in self.admins.items():
             self.data[iso3] = {}
-            for gas in gases:
-                self.data[iso3][gas] = []
-                for admin_level, admin_units in admin_levels.items():
+            for gas in self._configuration["gases"]:
+                for admin_type, admin_units in admin_types.items():
+                    self.data[iso3][f"{gas}|{admin_type}"] = []
+                    if gas == "pm2_5" and admin_type != "admin":
+                        continue
                     for admin_unit in admin_units:
-                        admin_info = self.fill_admin_info(admin_unit, admin_level)
-                        admin_id = admin_info[f"level_{admin_level}_id"]
-
+                        admin_id = admin_unit["id"]
                         for year in range(min_year, max_year + 1):
-                            url = f"{base_url}?sectors={sectors}&year={year}&gas={gas}&gadmId={admin_id}"
+                            if admin_type == "admin":
+                                admin_id_type = "gadmId"
+                            else:
+                                admin_id_type = "cityId"
+                            url = f"{base_url}?year={year}&gas={gas}&{admin_id_type}={admin_id}"
                             json = self._retriever.download_json(url)
-                            rows = self.process_rows(json, admin_info, min_date)
-                            self.data[iso3][gas].extend(rows)
+                            rows = self.process_rows(json, admin_unit, min_date)
+                            self.data[iso3][f"{gas}|{admin_type}"].extend(rows)
         return
 
     def generate_country_dataset(self, iso3: str) -> Dataset | None:
@@ -143,15 +116,30 @@ class Pipeline:
 
         subnational = False
         dates = set()
-        for gas, rows in country_data.items():
+        for data_type, rows in country_data.items():
+            if len(rows) == 0:
+                continue
+            gas, admin_type = data_type.split("|")
+            admin_levels = set()
             for row in rows:
                 date = f"{row['year']}-{row['month']}"
                 dates.add(date)
-                if not subnational and row["level"] > 0:
-                    subnational = True
+                if admin_type == "admin":
+                    admin_levels.add(str(row["level"]))
+                if not subnational:
+                    if admin_type == "cities" or (
+                        admin_type == "admin" and row["level"] > 0
+                    ):
+                        subnational = True
+            admin_name = (
+                admin_type
+                if admin_type == "cities"
+                else f"{admin_type}_{'_'.join(admin_levels)}"
+            )
+            resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {
-                "name": f"{iso3.lower()}_{gas}.csv",
-                "description": "Emissions data for the past 24 months",
+                "name": resource_name,
+                "description": f"Emissions data for {gas} in the past 24 months in {iso3} at the {admin_name.replace('_', ' ')} level",
             }
 
             dataset.generate_resource(
@@ -161,7 +149,11 @@ class Pipeline:
                 resource_info,
             )
 
-        dataset.set_time_period(f"{min(dates)}-1")
+        start_date = f"{min(dates)}-1"
+        end_year, end_month = max(dates).split("-")
+        end_date = datetime(int(end_year), int(end_month), 1)
+        end_date = end_date + relativedelta(months=1) - relativedelta(days=1)
+        dataset.set_time_period(start_date, end_date)
         dataset.add_tags(self._configuration["tags"])
 
         dataset.set_subnational(subnational)

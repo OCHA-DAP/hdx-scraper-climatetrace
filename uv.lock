@@ -364,14 +364,12 @@ dependencies = [
     { name = "pytest" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "pre-commit" },
-    { name = "ruff" },
-]
-test = [
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -379,13 +377,16 @@ requires-dist = [
     { name = "hdx-python-api" },
     { name = "hdx-python-country" },
     { name = "hdx-python-utilities" },
-    { name = "pre-commit", marker = "extra == 'dev'" },
     { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest", marker = "extra == 'test'" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.14.13" },
 ]
-provides-extras = ["dev", "test"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff", specifier = "==0.14.13" },
+]
 
 [[package]]
 name = "humanize"

@@ -64,6 +64,7 @@ def main(
             pipeline = Pipeline(configuration, retriever, tempdir, today)
             pipeline.get_admin_data(iso_list)
             pipeline.get_emissions_admin_data()
+            pipeline.get_emissions_source_data()
 
             for iso3 in iso_list:
                 logger.info(f"Generating dataset for {iso3}")

@@ -60,7 +60,9 @@ class Pipeline:
             self.admins[iso3] = {"admin": admin_info, "cities": cities_json}
         return
 
-    def process_rows(self, input_data: dict, admin_unit: dict) -> list[dict]:
+    def process_emissions_admin_rows(
+        self, input_data: dict, admin_unit: dict
+    ) -> list[dict]:
         rows = []
         min_year = self.min_date.year
         min_month = self.min_date.month
@@ -75,6 +77,15 @@ class Pipeline:
                 continue
             new_row = admin_unit | row
             rows.append(new_row)
+        return rows
+
+    def process_emissions_source_rows(self, input_data: list[dict]) -> list[dict]:
+        rows = []
+        min_year = self.min_date.year
+        for row in input_data:
+            if row["year"] < min_year:
+                continue
+            rows.append(row)
         return rows
 
     def get_emissions_admin_data(self) -> None:
@@ -99,8 +110,32 @@ class Pipeline:
                                 admin_id_type = "cityId"
                             url = f"{base_url}?year={year}&gas={gas}&{admin_id_type}={admin_id}"
                             json = self._retriever.download_json(url)
-                            rows = self.process_rows(json, admin_unit)
+                            rows = self.process_emissions_admin_rows(json, admin_unit)
                             self.data[iso3][f"{gas}|{admin_type}"].extend(rows)
+        return
+
+    def get_emissions_source_data(self) -> None:
+        min_year = self.min_date.year
+        max_year = self.today.year
+
+        # loop through countries, gases, sectors, and years
+        base_url = self._configuration["source_url"]
+        for iso3, _ in self.admins.items():
+            if iso3 not in self.data:
+                self.data[iso3] = {}
+            for gas in self._configuration["gases"]:
+                self.data[iso3][f"{gas}|sources"] = []
+                for sector in self._configuration["sectors"]:
+                    for year in range(min_year, max_year + 1):
+                        for page in range(10000):
+                            url = f"{base_url}?sectors={sector}&year={year}&gas={gas}&gadmId={iso3}&limit=10000&offset={page * 10000}"
+                            json = self._retriever.download_json(url)
+                            if json is None:
+                                break
+                            rows = self.process_emissions_source_rows(json)
+                            self.data[iso3][f"{gas}|sources"].extend(rows)
+                            if len(json) < 10000:
+                                break
         return
 
     def generate_country_dataset(self, iso3: str) -> Dataset | None:
@@ -127,24 +162,28 @@ class Pipeline:
             gas, admin_type = data_type.split("|")
             admin_levels = set()
             for row in rows:
-                date = f"{row['year']}-{row['month']}"
-                dates.add(date)
+                if "month" in row:
+                    date = f"{row['year']}-{str(row['month']).zfill(2)}"
+                    dates.add(date)
+                else:
+                    dates.add(f"{row['year']}-1")
+                    dates.add(f"{row['year']}-12")
                 if admin_type == "admin":
                     admin_levels.add(str(row["level"]))
                 if not subnational:
-                    if admin_type == "cities" or (
+                    if admin_type in ["cities", "sources"] or (
                         admin_type == "admin" and row["level"] > 0
                     ):
                         subnational = True
             admin_name = (
                 admin_type
-                if admin_type == "cities"
+                if admin_type in ["cities", "sources"]
                 else f"{admin_type}_{'_'.join(sorted(list(admin_levels)))}"
             )
             resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {
                 "name": resource_name,
-                "description": f"Emissions data for {gas} in the past 24 months in {iso3} at the {admin_name.replace('_', ' ')} level",
+                "description": f"Emissions data for {gas} in the past 2 years in {iso3} at the {admin_name.replace('_', ' ')} level",
             }
 
             dataset.generate_resource(
@@ -158,6 +197,8 @@ class Pipeline:
         end_year, end_month = max(dates).split("-")
         end_date = datetime(int(end_year), int(end_month), 1)
         end_date = end_date + relativedelta(months=1) - relativedelta(days=1)
+        if end_date > self.today.replace(tzinfo=None):
+            end_date = self.today.replace(tzinfo=None)
         dataset.set_time_period(start_date, end_date)
         dataset.add_tags(self._configuration["tags"])
 

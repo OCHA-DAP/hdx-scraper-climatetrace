@@ -28,6 +28,7 @@ class TestPipeline:
                 pipeline = Pipeline(configuration, retriever, tempdir, today)
                 pipeline.get_admin_data(["AFG"])
                 pipeline.get_emissions_admin_data()
+                pipeline.get_emissions_source_data()
 
                 dataset = pipeline.generate_country_dataset("AFG")
                 dataset.update_from_yaml(
@@ -36,7 +37,7 @@ class TestPipeline:
                 assert dataset == {
                     "name": "afg-climate-trace",
                     "title": "Afghanistan: Climate TRACE GHG and non-GHG Emissions Inventory",
-                    "dataset_date": "[2024-10-01T00:00:00 TO 2025-09-30T23:59:59]",
+                    "dataset_date": "[2024-02-01T00:00:00 TO 2025-12-31T23:59:59]",
                     "tags": [
                         {
                             "name": "climate-weather",
@@ -69,17 +70,27 @@ class TestPipeline:
                 assert resources == [
                     {
                         "name": "afg_co2e_20yr_admin_0_1.csv",
-                        "description": "Emissions data for co2e_20yr in the past 24 months in AFG at the admin 0 1 level",
+                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the admin 0 1 level",
                         "format": "csv",
                     },
                     {
                         "name": "afg_co2e_20yr_cities.csv",
-                        "description": "Emissions data for co2e_20yr in the past 24 months in AFG at the cities level",
+                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the cities level",
                         "format": "csv",
                     },
                     {
                         "name": "afg_pm2_5_admin_0.csv",
-                        "description": "Emissions data for pm2_5 in the past 24 months in AFG at the admin 0 level",
+                        "description": "Emissions data for pm2_5 in the past 2 years in AFG at the admin 0 level",
+                        "format": "csv",
+                    },
+                    {
+                        "name": "afg_co2e_20yr_sources.csv",
+                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the sources level",
+                        "format": "csv",
+                    },
+                    {
+                        "name": "afg_pm2_5_sources.csv",
+                        "description": "Emissions data for pm2_5 in the past 2 years in AFG at the sources level",
                         "format": "csv",
                     },
                 ]

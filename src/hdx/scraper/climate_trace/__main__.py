@@ -77,7 +77,7 @@ def main(
                     )
                     dataset.create_in_hdx(
                         remove_additional_resources=True,
-                        match_resource_order=False,
+                        match_resource_order=True,
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
                     )

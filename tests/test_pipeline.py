@@ -70,12 +70,12 @@ class TestPipeline:
                 resources = dataset.get_resources()
                 assert resources == [
                     {
-                        "name": "afg_co2e_20yr_admin_0_1.csv",
+                        "name": "afg_co2e_admin_0_1.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
                     },
                     {
-                        "name": "afg_co2e_20yr_city.csv",
+                        "name": "afg_co2e_city.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the city level.",
                         "format": "csv",
                     },
@@ -85,7 +85,7 @@ class TestPipeline:
                         "format": "csv",
                     },
                     {
-                        "name": "afg_co2e_20yr_source.csv",
+                        "name": "afg_co2e_source.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the source level.",
                         "format": "csv",
                     },

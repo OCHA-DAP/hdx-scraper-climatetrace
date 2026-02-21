@@ -181,6 +181,8 @@ class Pipeline:
                 admin_name = f"admin_{'_'.join(sorted(list(admin_levels)))}"
                 admin_desc = f"admin {' and '.join(sorted(list(admin_levels)))}"
             gas_desc = self._configuration["gases"][gas]
+            if gas == "co2e_20yr":
+                gas = "co2e"
             resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {
                 "name": resource_name,

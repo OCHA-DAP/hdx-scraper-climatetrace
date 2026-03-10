@@ -59,16 +59,15 @@ def main(
                 use_saved=use_saved,
             )
             today = now_utc()
-            iso_list = list(Country.countriesdata()["countries"].keys())
-
             pipeline = Pipeline(configuration, retriever, tempdir, today)
-            pipeline.get_admin_data(iso_list)
-            pipeline.get_emissions_admin_data()
-            pipeline.get_emissions_source_data()
 
-            for iso3 in iso_list:
+            for iso3 in list(Country.countriesdata()["countries"].keys()):
+                admin_info, city_json = pipeline.get_admin_data(iso3)
+                admin_data, city_data = pipeline.get_emissions_admin_data(admin_info, city_json)
+                source_data = pipeline.get_emissions_source_data(iso3)
+
                 logger.info(f"Generating dataset for {iso3}")
-                dataset = pipeline.generate_country_dataset(iso3)
+                dataset = pipeline.generate_country_dataset(iso3, admin_data, city_data, source_data)
                 if dataset:
                     dataset.update_from_yaml(
                         script_dir_plus_file(

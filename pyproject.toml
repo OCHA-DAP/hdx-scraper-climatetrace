@@ -9,7 +9,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "hdx-scraper-climate_trace"
+name = "hdx-scraper-climatetrace"
 dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = [
@@ -28,7 +28,7 @@ dev = [
 ]
 
 [project.scripts]
-run = "hdx.scraper.climate_trace.__main__:main"
+run = "hdx.scraper.climatetrace.__main__:main"
 
 # ----------------------------------------------------------------------------
 # Hatchling (Build & Versioning)
@@ -42,7 +42,7 @@ local_scheme = "no-local-version"
 version_scheme = "python-simplified-semver"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/hdx/scraper/climate_trace/_version.py"
+version-file = "src/hdx/scraper/climatetrace/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/hdx"]
@@ -70,7 +70,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-local-folder = ["hdx.scraper.climate_trace"]
+known-local-folder = ["hdx.scraper.climatetrace"]
 known-third-party = [
     "hdx.api",
     "hdx.location",

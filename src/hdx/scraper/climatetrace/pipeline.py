@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Climate_trace scraper"""
+"""climatetrace scraper"""
 
 import logging
 from datetime import datetime

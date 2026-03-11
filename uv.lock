@@ -380,7 +380,7 @@ wheels = [
 ]
 
 [[package]]
-name = "hdx-scraper-climate-trace"
+name = "hdx-scraper-climatetrace"
 source = { editable = "." }
 dependencies = [
     { name = "hdx-python-api" },

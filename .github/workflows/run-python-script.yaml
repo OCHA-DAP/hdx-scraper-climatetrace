@@ -38,7 +38,7 @@ jobs:
           EXTRA_PARAMS: ${{ vars.EXTRA_PARAMS }}
         # 'uv run' executes the command inside the environment created by 'uv sync'
         run: |
-          uv run python -m hdx.scraper.climate_trace
+          uv run python -m hdx.scraper.climatetrace
 
       - name: Send mail
         if: failure()

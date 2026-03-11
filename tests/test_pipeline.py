@@ -6,7 +6,7 @@ from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
 
-from hdx.scraper.climate_trace.pipeline import Pipeline
+from hdx.scraper.climatetrace.pipeline import Pipeline
 
 
 class TestPipeline:

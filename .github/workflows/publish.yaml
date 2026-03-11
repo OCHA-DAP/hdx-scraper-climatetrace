@@ -49,7 +49,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: public.ecr.aws/unocha/hdx-scraper-climate_trace:${{ steps.tag_info.outputs.IMAGE_TAG }}
+          tags: public.ecr.aws/unocha/hdx-scraper-climatetrace:${{ steps.tag_info.outputs.IMAGE_TAG }}
           # Enable cache to speed up re-builds
           cache-from: type=gha
           cache-to: type=gha,mode=max

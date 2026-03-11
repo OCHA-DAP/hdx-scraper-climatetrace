@@ -21,12 +21,12 @@ from hdx.utilities.path import (
 )
 from hdx.utilities.retriever import Retrieve
 
-from hdx.scraper.climate_trace._version import __version__
-from hdx.scraper.climate_trace.pipeline import Pipeline
+from hdx.scraper.climatetrace._version import __version__
+from hdx.scraper.climatetrace.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
-_LOOKUP = "hdx-scraper-climate-trace"
+_LOOKUP = "hdx-scraper-climatetrace"
 _SAVED_DATA_DIR = "saved_data"  # Keep in repo to avoid deletion in /tmp
 _UPDATED_BY_SCRIPT = "HDX Scraper: Climate TRACE"
 

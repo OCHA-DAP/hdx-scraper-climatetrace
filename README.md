@@ -1,6 +1,6 @@
 # Collector for Climate TRACE Datasets
-[![Build Status](https://github.com/OCHA-DAP/hdx-scraper-climate-trace/actions/workflows/run-python-tests.yaml/badge.svg)](https://github.com/OCHA-DAP/hdx-scraper-climate-trace/actions/workflows/run-python-tests.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-scraper-climate-trace/badge.svg?branch=main&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-scraper-climate-trace?branch=main)
+[![Build Status](https://github.com/OCHA-DAP/hdx-scraper-climatetrace/actions/workflows/run-python-tests.yaml/badge.svg)](https://github.com/OCHA-DAP/hdx-scraper-climatetrace/actions/workflows/run-python-tests.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-scraper-climatetrace/badge.svg?branch=main&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-scraper-climatetrace?branch=main)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 This script downloads data from the Climate TRACE API and creates country level datasets on HDX regarding greenhouse gas emissions at the admin 0, admin 1, city, and source level.
@@ -29,7 +29,7 @@ For the script to run, you will need to have a file called
  You will also need to supply the universal .useragents.yaml file in your home
  directory as specified in the parameter *user_agent_config_yaml* passed to
  facade in run.py. The collector reads the key
- **hdx-scraper-climate_trace** as specified in the parameter
+ **hdx-scraper-climatetrace** as specified in the parameter
  *user_agent_lookup*.
 
  Alternatively, you can set up environment variables: `USER_AGENT`, `HDX_KEY`,
@@ -38,7 +38,7 @@ For the script to run, you will need to have a file called
 To run, execute:
 
 ```shell
-    uv run python -m hdx.scraper.climate_trace
+    uv run python -m hdx.scraper.climatetrace
 ```
 
 ### Pre-commit

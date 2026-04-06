@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/var/cache/apk \
     gdal-dev \
     geos-dev \
     proj-dev \
-    linux-headers\
+    linux-headers
 
 # 2. Copy only dependency locks first for layer caching
 COPY pyproject.toml uv.lock ./

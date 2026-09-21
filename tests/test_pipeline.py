@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from os.path import join
 
@@ -72,42 +73,53 @@ class TestPipeline:
                     "data_update_frequency": 30,
                     "notes": "Climate TRACE is a non-profit coalition of organizations building a timely, open, and accessible inventory of exactly where greenhouse gas emissions are coming from. Climate TRACE estimates greenhouse gas (GHG) and air pollutant emissions for over 2.7 million sources (from over 744 million assets), and every single country globally.\n\nThe Climate TRACE emissions inventory includes:\n- Annual country-level emissions by sub-sector and by gas beginning in 2015\n- Monthly source-level emissions by sub-sector and gas beginning in 2021 and confidence\n- Emissions source ownership where and when available.\n",
                 }
+                data_dictionaries = {
+                    dict_type: json.dumps(columns, separators=(",", ":"))
+                    for dict_type, columns in configuration["data_dictionary"].items()
+                }
                 resources = dataset.get_resources()
                 assert resources == [
                     {
                         "name": "afg_ch4_admin_0_1.csv",
                         "description": "Afghanistan methane emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["admin"],
                     },
                     {
                         "name": "afg_co2e_20yr_admin_0_1.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["admin"],
                     },
                     {
                         "name": "afg_ch4_city.csv",
                         "description": "Afghanistan methane emissions over the past 2 years at the city level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["city"],
                     },
                     {
                         "name": "afg_co2e_20yr_city.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the city level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["city"],
                     },
                     {
                         "name": "afg_ch4_source.csv",
                         "description": "Afghanistan methane emissions over the past 2 years at the source level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["source"],
                     },
                     {
                         "name": "afg_co2e_20yr_source.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the source level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["source"],
                     },
                     {
                         "name": "afg_pm2_5_source.csv",
                         "description": "Afghanistan PM2.5 emissions over the past 2 years at the source level.",
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["source"],
                     },
                 ]
 

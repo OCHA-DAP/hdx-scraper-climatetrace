@@ -34,3 +34,164 @@ tags:
   - climate-weather
   - environment
   - points of interest-poi
+
+data_dictionary:
+  admin:
+    - field: full_name
+      label: Full name
+      data_type: text
+      description: "Full name of administrative area including parent levels"
+    - field: id
+      label: ID
+      data_type: text
+      description: "GADM identifier of administrative area at given level"
+    - field: level
+      label: Level
+      data_type: numeric
+      description: "Administrative level: 0=country, 1=state/province, 2=county/district"
+    - field: level_0_id
+      label: Level 0 ID
+      data_type: text
+      description: "GADM identifier of level 0 (country) area"
+    - field: level_1_id
+      label: Level 1 ID
+      data_type: text
+      description: "GADM identifier of level 1 (state/province) area, blank if not applicable"
+    - field: level_2_id
+      label: Level 2 ID
+      data_type: text
+      description: "GADM identifier of level 2 (county/district) area, blank if not applicable"
+    - field: name
+      label: Name
+      data_type: text
+      description: "Name of administrative area"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"
+    - field: month
+      label: Month
+      data_type: numeric
+      description: "Calendar month of observation"
+    - field: sector
+      label: Sector
+      data_type: text
+      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+    - field: gas
+      label: Gas
+      data_type: text
+      description: "Greenhouse gas or air pollutant reported (e.g. CO2, CH4, PM2.5)"
+    - field: emissionsQuantity
+      label: Emissions quantity
+      data_type: numeric
+      description: "Quantity of gas emitted, in metric tonnes"
+  city:
+    - field: id
+      label: ID
+      data_type: text
+      description: "Identifier of city, Functional Urban Area of GHSL"
+    - field: name
+      label: Name
+      data_type: text
+      description: "Name of city (GHSL Functional Urban Area)"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country name"
+    - field: alternateNames
+      label: Alternate names
+      data_type: text
+      description: "Alternative or commonly used names for city"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"
+    - field: month
+      label: Month
+      data_type: numeric
+      description: "Calendar month of observation"
+    - field: sector
+      label: Sector
+      data_type: text
+      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+    - field: gas
+      label: Gas
+      data_type: text
+      description: "Greenhouse gas or air pollutant reported (e.g. CO2, CH4, PM2.5)"
+    - field: emissionsQuantity
+      label: Emissions quantity
+      data_type: numeric
+      description: "Quantity of gas emitted, in metric tonnes"
+  source:
+    - field: id
+      label: ID
+      data_type: numeric
+      description: "Internal Climate TRACE identifier for emissions source"
+    - field: name
+      label: Name
+      data_type: text
+      description: "Name of entity or source producing emissions"
+    - field: sector
+      label: Sector
+      data_type: text
+      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+    - field: subsector
+      label: Subsector
+      data_type: text
+      description: "Granular sector name (e.g. rice-cultivation, copper-mining)"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country name"
+    - field: assetType
+      label: Asset type
+      data_type: text
+      description: "Classification of emissions source or asset type"
+    - field: sourceType
+      label: Source type
+      data_type: text
+      description: "Source of data point"
+    - field: centroid
+      label: Centroid
+      data_type: text
+      description: "Approximate location of source as point (latitude, longitude)"
+    - field: gas
+      label: Gas
+      data_type: text
+      description: "Greenhouse gas or air pollutant reported (e.g. CO2, CH4, PM2.5)"
+    - field: emissionsQuantity
+      label: Emissions quantity
+      data_type: numeric
+      description: "Quantity of gas emitted, in metric tonnes"
+    - field: emissionsFactor
+      label: Emissions factor
+      data_type: numeric
+      description: "Emissions factor of reported activity"
+    - field: emissionsFactorUnits
+      label: Emissions factor units
+      data_type: text
+      description: "Units of reported emissions factor"
+    - field: activity
+      label: Activity
+      data_type: numeric
+      description: "Activity of entity producing emissions, excluding units"
+    - field: activityUnits
+      label: Activity units
+      data_type: text
+      description: "Units of reported activity"
+    - field: capacity
+      label: Capacity
+      data_type: numeric
+      description: "Capacity of entity producing emissions, excluding units"
+    - field: capacityUnits
+      label: Capacity units
+      data_type: text
+      description: "Units of reported capacity"
+    - field: capacityFactor
+      label: Capacity factor
+      data_type: numeric
+      description: "Ratio of actual output to rated capacity"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"

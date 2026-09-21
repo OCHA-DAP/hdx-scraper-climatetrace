@@ -13,7 +13,7 @@ name = "hdx-scraper-climatetrace"
 dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = [
-  "hdx-python-api",
+  "hdx-python-api>=6.7.0",
   "hdx-python-country",
   "hdx-python-utilities",
   "pytest>=9.0.2",

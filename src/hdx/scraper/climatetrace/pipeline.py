@@ -162,7 +162,7 @@ class Pipeline:
                 dates.add(f"{row['year']}-1")
                 dates.add(f"{row['year']}-12")
 
-        def create_resource(gas, rows, suffix, level_desc):
+        def create_resource(gas, rows, suffix, level_desc, dict_type):
             gas_desc = self._configuration["gas_names"][gas]
             resource_info = {
                 "name": f"{iso3.lower()}_{gas}_{suffix}.csv",
@@ -170,6 +170,9 @@ class Pipeline:
             }
             dataset.generate_resource(
                 self._tempdir, resource_info["name"], rows, resource_info
+            )
+            dataset.get_resource(-1).set_hdx_data_dictionary(
+                self._configuration["data_dictionary"][dict_type]
             )
 
         # --- 1. Process Admin Data ---
@@ -190,6 +193,7 @@ class Pipeline:
                 rows,
                 suffix=f"admin_{'_'.join(sorted_levels)}",
                 level_desc=f"admin {' and '.join(sorted_levels)}",
+                dict_type="admin",
             )
 
         # --- 2. Process City and Source Data ---
@@ -201,7 +205,13 @@ class Pipeline:
                 for row in rows:
                     extract_dates(row)
 
-                create_resource(gas, rows, suffix=level_name, level_desc=level_name)
+                create_resource(
+                    gas,
+                    rows,
+                    suffix=level_name,
+                    level_desc=level_name,
+                    dict_type=level_name,
+                )
                 subnational = True
 
         start_date = f"{min(dates)}-1"

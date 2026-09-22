@@ -28,7 +28,7 @@ class Pipeline:
         self.today = today
         self.min_date = today - relativedelta(years=2)
 
-    def get_admin_data(self, iso3: str) -> tuple[list, list]:
+    def get_admin_data(self, iso3: str) -> tuple[list[dict], list[dict]]:
         country_name = Country.get_country_name_from_iso3(iso3)
         admin_info = [
             {
@@ -85,8 +85,8 @@ class Pipeline:
         return rows
 
     def get_emissions_admin_data(
-        self, admin_info: list, city_json: list
-    ) -> tuple[dict, dict]:
+        self, admin_info: list[dict], city_json: list[dict]
+    ) -> tuple[dict[str, list[dict]], dict[str, list[dict]]]:
         min_year = self.min_date.year
         max_year = self.today.year
 
@@ -94,7 +94,9 @@ class Pipeline:
         base_url = self._configuration["emissions_url"]
         gases = self._configuration["gases"]
 
-        def get_data_for_type(gas, admin_id_type, admin_units):
+        def get_data_for_type(
+            gas: str, admin_id_type: str, admin_units: list[dict]
+        ) -> list[dict]:
             data_for_type = []
             for admin_unit in admin_units:
                 admin_id = admin_unit["id"]
@@ -113,7 +115,7 @@ class Pipeline:
             city_data[gas] = get_data_for_type(gas, "cityId", city_json)
         return admin_data, city_data
 
-    def get_emissions_source_data(self, iso3) -> dict:
+    def get_emissions_source_data(self, iso3: str) -> dict[str, list[dict]]:
         min_year = self.min_date.year
         max_year = self.today.year
 
@@ -136,7 +138,11 @@ class Pipeline:
         return source_data
 
     def generate_country_dataset(
-        self, iso3: str, admin_data, city_data, source_data
+        self,
+        iso3: str,
+        admin_data: dict[str, list[dict]],
+        city_data: dict[str, list[dict]],
+        source_data: dict[str, list[dict]],
     ) -> Dataset | None:
         country_name = Country.get_country_name_from_iso3(iso3)
         dataset_name = f"{iso3.lower()}-climate-trace"
@@ -155,23 +161,29 @@ class Pipeline:
         subnational = False
         dates = set()
 
-        def extract_dates(row):
+        def extract_dates(row: dict) -> None:
             if "month" in row:
                 dates.add(f"{row['year']}-{str(row['month']).zfill(2)}")
             else:
                 dates.add(f"{row['year']}-1")
                 dates.add(f"{row['year']}-12")
 
-        def create_resource(gas, rows, suffix, level_desc, dict_type):
+        def create_resource(
+            gas: str,
+            rows: list[dict],
+            suffix: str,
+            level_desc: str,
+            dict_type: str,
+        ) -> None:
             gas_desc = self._configuration["gas_names"][gas]
             resource_info = {
                 "name": f"{iso3.lower()}_{gas}_{suffix}.csv",
                 "description": f"{country_name} {gas_desc} emissions over the past 2 years at the {level_desc} level.",
             }
-            dataset.generate_resource(
+            _, results = dataset.generate_resource(
                 self._tempdir, resource_info["name"], rows, resource_info
             )
-            dataset.get_resource(-1).set_hdx_data_dictionary(
+            results["resource"].set_hdx_data_dictionary(
                 self._configuration["data_dictionary"][dict_type]
             )
 

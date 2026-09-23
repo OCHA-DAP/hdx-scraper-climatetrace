@@ -87,7 +87,6 @@ def main(
                         match_resource_order=True,
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
-                        force_update=True,
                     )
 
 

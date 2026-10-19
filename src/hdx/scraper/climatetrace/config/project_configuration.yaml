@@ -48,7 +48,7 @@ data_dictionary:
     - field: level
       label: Level
       data_type: numeric
-      description: "Administrative level: 0=country, 1=state/province, 2=county/district"
+      description: "Admin level: 0=country, 1=state/province, 2=county/district"
     - field: level_0_id
       label: Level 0 ID
       data_type: text
@@ -56,11 +56,11 @@ data_dictionary:
     - field: level_1_id
       label: Level 1 ID
       data_type: text
-      description: "GADM identifier of level 1 (state/province) area, blank if not applicable"
+      description: "GADM level 1 (state/province) ID, blank if not applicable"
     - field: level_2_id
       label: Level 2 ID
       data_type: text
-      description: "GADM identifier of level 2 (county/district) area, blank if not applicable"
+      description: "GADM level 2 (county/district) ID, blank if not applicable"
     - field: name
       label: Name
       data_type: text
@@ -76,7 +76,7 @@ data_dictionary:
     - field: sector
       label: Sector
       data_type: text
-      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+      description: "Sector, e.g. agriculture, mineral-extraction, transportation"
     - field: gas
       label: Gas
       data_type: text
@@ -113,7 +113,7 @@ data_dictionary:
     - field: sector
       label: Sector
       data_type: text
-      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+      description: "Sector, e.g. agriculture, mineral-extraction, transportation"
     - field: gas
       label: Gas
       data_type: text
@@ -134,7 +134,7 @@ data_dictionary:
     - field: sector
       label: Sector
       data_type: text
-      description: "High-level sector (e.g. agriculture, mineral-extraction, transportation)"
+      description: "Sector, e.g. agriculture, mineral-extraction, transportation"
     - field: subsector
       label: Subsector
       data_type: text
